@@ -19,30 +19,34 @@ Python 2.7.10+
 
 ***3.3实现从输入到输出的映射***
 快速风格迁移的本质是建立了一种从输入到输出的映射关系，所以我们就要将摄像头或者相册得到的图片传入神经网络，由神经网络输出，因为Core ML要求喂入网络的是CVPixelBuffer，所以我们要自己处理一下，这里Apple并没有提供对应的转化API，所以我们要自己实现他。总结处理逻辑就是UIImage2CVPixelBuffer2UIImage。具体的toCVPixelBuffer和toUIImage的代码就直接看项目就好了。这里只简单说一下ViewController里的process实现
->typealias FilteringCompletion = ((UIImage?, Error?) -> ())
->func process(input: UIImage, completion: @escaping FilteringCompletion) {
->    //初始化mlmodel
->    let model = StarryNight()
->    DispatchQueue.global().async {
->         //将转化成UIImage转化为CVPixelBuffer
->        guard let cvBufferInput = input.toCVPixelBuffer(width: 720, height: 720) else {
->               return
->        }
->      //喂入神经网络处理
->      guard let output = try? model.prediction(inputImage: cvBufferInput) else {
->          return
->      }
->      //将CVpixelBuffer转化回UIImage
->      guard let outputImage = UIImage(pixelBuffer: output.outputImage) else {
->          return
->      }
->      //将CGSize还原为原尺寸的UIImage
->      let finalImage = outputImage.toUIImage(to: input.size)
->      DispatchQueue.main.async {
->          completion(finalImage, nil)
->      }
->    }
->}
+```swift
+    typealias FilteringCompletion = ((UIImage?, Error?) -> ())
+    func process(input: UIImage, completion: @escaping FilteringCompletion) {
+        //初始化mlmodel
+        let model = StarryNight()
+
+        DispatchQueue.global().async {
+            //将转化成UIImage转化为CVPixelBuffer
+            guard let cvBufferInput = input.toCVPixelBuffer(width: 720, height: 720) else {
+                return
+            }
+            //喂入神经网络处理
+            guard let output = try? model.prediction(inputImage: cvBufferInput) else {
+                return
+            }
+            //将CVpixelBuffer转化回UIImage
+            guard let outputImage = UIImage(pixelBuffer: output.outputImage) else {
+                return
+            }
+            //还原为原尺寸的UIImage
+            let finalImage = outputImage.resize(to: input.size)
+
+            DispatchQueue.main.async {
+                completion(finalImage, nil)
+            }
+        }  
+    }
+```
 笔者比较懒，基本上所有的异常都没有处理，都是直接return，望见谅。
 
 ***4.最后总结***
