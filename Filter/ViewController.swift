@@ -38,7 +38,6 @@ class ViewController: UIViewController {
         present(picker, animated: true, completion: nil)//显示当前的UIViewController，animated是否包含动画
     }
     
-    
     typealias FilteringCompletion = ((UIImage?, Error?) -> ())
     func process(input: UIImage, completion: @escaping FilteringCompletion) {
 
@@ -65,17 +64,28 @@ class ViewController: UIViewController {
         }
     }
     
+    //调整Button可访问状态
+    @objc func changeButtonStatus() {
+        submitButton.isEnabled = true
+    }
+    
     @IBAction func submitter() {
+        
+        submitButton.isEnabled = false
         
         guard let image = self.imageView.image else {
             return
         }
+        
+        //每隔延时3s才提交，避免闪退
+        self.perform(#selector(changeButtonStatus),with: nil,afterDelay: 3)
         
         self.process(input: image) {filteredImage, error in
             if let filteredImage = filteredImage {
                 self.imageView.image = filteredImage
             }
         }
+        
     }
     
     @IBAction func saver(_ sender: AnyObject) {
