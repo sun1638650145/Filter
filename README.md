@@ -1,7 +1,7 @@
 ## Core ML实现图像风格迁移(Style Transfer)
 
 ### 1.简介
-利用TensorFlow训练我们自己需要的模型后转化为Core ML的模型，部署在iOS设备上
+利用TensorFlow训练我们模型后转化为Core ML的模型，部署在iOS设备上
 
 ### 2.运行环境
 * macOS 10.14.1 
