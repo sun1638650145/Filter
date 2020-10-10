@@ -1,4 +1,4 @@
-!/bin/zsh
+#!/bin/bash
 # TensorFlow Serving服务器配置脚本apt
 
 # 添加Google的TensorFlow Serving源
