@@ -9,9 +9,9 @@ sudo apt-get update
 # 安装tfserving服务
 sudo apt-get install tensorflow-model-server
 
-# $0 端口（自定）
-# $1 模型名称（自定）
-# $2 saved_model的绝对路径
+# $1 端口（自定）
+# $2 模型名称（自定）
+# $3 saved_model的绝对路径
 echo "URI:http://47.94.217.140:$1/v1/models/$2:predict"
 tensorflow_model_server \
 --rest_api_port=$1 \
